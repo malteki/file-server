@@ -2,6 +2,7 @@
 name = "hyper-api-exp"
 version = "0.1.0"
 edition = "2021"
+readme = "README.md"
 
 [dependencies]
 hyper = { version = "1", features = ["http1", "server"] }
