@@ -4,7 +4,7 @@ use walkdir::WalkDir;
 
 use crate::*;
 
-pub async fn generate_file_list() -> Result<(), std::io::Error> {
+pub async fn get_file_list() -> Vec<String> {
     let mut files: Vec<String> = WalkDir::new(FS_DIR)
         .follow_links(false)
         .follow_root_links(false)
@@ -28,6 +28,12 @@ pub async fn generate_file_list() -> Result<(), std::io::Error> {
         }
     });
 
+    files
+}
+
+pub async fn generate_file_list_html() -> Result<(), std::io::Error> {
+    let files = get_file_list().await;
+
     println!("detected:");
     let mut href_lines = String::new();
     for file in &files {
@@ -35,14 +41,12 @@ pub async fn generate_file_list() -> Result<(), std::io::Error> {
         href_lines += &format!("{}<br>", href_line(&file));
     }
 
-    fs::write(
-        FILE_LIST_PATH,
-        FILE_LIST_BASE.replace("<!--HREF-LINES-->", &href_lines)
-    )
+    fs::write(FILE_LIST_PATH, FILE_LIST_BASE.replace("<!--HREF-LINES-->", &href_lines))
 }
 
 fn href_line(file_name: &str) -> String {
-    format!("<a href=\"/open?{file_name}\">{file_name}</a>")
+    // let file_name = file_name.replace(" ", "%");
+    format!("<a href=\"/file?{file_name}\">{file_name}</a>")
 }
 
 fn count_char_occurrences(s: &str, c: char) -> usize {

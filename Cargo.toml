@@ -18,6 +18,7 @@ form_urlencoded = "1"
 http = "1"
 futures-util = { version = "0.3", default-features = false }
 walkdir = "2.5.0"
+percent-encoding = "2.3.1"
 
 [profile.dev.package."*"]
 opt-level = 3

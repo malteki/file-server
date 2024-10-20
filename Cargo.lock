@@ -257,6 +257,7 @@ dependencies = [
  "http-body-util",
  "hyper",
  "hyper-util",
+ "percent-encoding",
  "pretty_env_logger",
  "serde",
  "serde_json",

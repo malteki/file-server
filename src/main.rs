@@ -13,7 +13,7 @@ async fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
     pretty_env_logger::init();
 
     let start = Instant::now();
-    fs_tools::generate_file_list().await?;
+    fs_tools::generate_file_list_html().await?;
     let file_list_dur = start.elapsed();
     println!("generating file-list.html took {file_list_dur:?}");
 
