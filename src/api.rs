@@ -29,7 +29,7 @@ pub async fn handle_request(
             if query.contains("../") {
                 Ok(simple_response(StatusCode::OK, "path can't contain ../"))
             } else {
-                // remove leading """ because that would interfere with 'PathBuf::join(...)'
+                // remove leading "/" because that would interfere with 'PathBuf::join(...)'
                 while query.starts_with('/') {
                     query = query.strip_prefix('/').unwrap_or("").to_string();
                 }
