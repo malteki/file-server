@@ -49,10 +49,12 @@ pub async fn handle_request(
             // add support for filtering queries (eg. /file-list?contains=...)
             // we simplify here for now: we take the entire query as pattern for the String::contains(pat) filter
             if let Some(query) = query {
-                files = files
-                    .into_iter()
-                    .filter(|string| { string.contains(&query) })
-                    .collect();
+                for pat in query.split('|') {
+                    files = files
+                        .into_iter()
+                        .filter(|path| { path.contains(pat) })
+                        .collect();
+                }
             }
 
             let mut files_string = String::new();
