@@ -36,7 +36,7 @@ pub async fn handle_request(
 
                 let path = PathBuf::from(FS_DIR).join(query);
 
-                println!("requested path: {}", path.display());
+                log::debug!("requested path: {}", path.display());
 
                 simple_file_send(&path).await
             }

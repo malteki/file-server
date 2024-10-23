@@ -34,10 +34,10 @@ pub async fn get_file_list() -> Vec<String> {
 pub async fn generate_file_list_html() -> Result<(), std::io::Error> {
     let files = get_file_list().await;
 
-    println!("detected:");
+    log::trace!("detected:");
     let mut href_lines = String::new();
     for file in &files {
-        println!(" {file}");
+        log::trace!(" {file}");
         href_lines += &format!("{}<br>", href_line(&file));
     }
 

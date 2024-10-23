@@ -1,3 +1,4 @@
+use std::env;
 use std::net::SocketAddr;
 use std::time::Instant;
 
@@ -10,17 +11,18 @@ use fileserver::*;
 
 #[tokio::main]
 async fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
-    pretty_env_logger::init();
+    env::set_var("RUST_LOG", "debug");
+    env_logger::init();
 
     let start = Instant::now();
     fs_tools::generate_file_list_html().await?;
     let file_list_dur = start.elapsed();
-    println!("generating file-list.html took {file_list_dur:?}");
+    log::debug!("generating file-list.html took {file_list_dur:?}");
 
     let addr: SocketAddr = "0.0.0.0:1336".parse().unwrap();
 
     let listener = TcpListener::bind(addr).await?;
-    println!("Listening on http://{}", addr);
+    log::info!("Listening on http://{}", addr);
 
     loop {
         let (stream, _) = listener.accept().await?;
@@ -32,7 +34,7 @@ async fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
                     ::new()
                     .serve_connection(io, service_fn(api::handle_request)).await
             {
-                println!("Failed to serve connection: {:?}", err);
+                log::warn!("Failed to serve connection: {:?}", err);
             }
         });
     }
