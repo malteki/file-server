@@ -17,7 +17,7 @@ async fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
     let file_list_dur = start.elapsed();
     println!("generating file-list.html took {file_list_dur:?}");
 
-    let addr: SocketAddr = "127.0.0.1:1336".parse().unwrap();
+    let addr: SocketAddr = "0.0.0.0:1336".parse().unwrap();
 
     let listener = TcpListener::bind(addr).await?;
     println!("Listening on http://{}", addr);
