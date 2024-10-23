@@ -79,6 +79,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "fileserver"
+version = "0.1.0"
+dependencies = [
+ "bytes",
+ "form_urlencoded",
+ "futures-util",
+ "http",
+ "http-body-util",
+ "hyper",
+ "hyper-util",
+ "percent-encoding",
+ "pretty_env_logger",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tokio-util",
+ "walkdir",
+]
+
+[[package]]
 name = "fnv"
 version = "1.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -244,26 +264,6 @@ dependencies = [
  "pin-project-lite",
  "smallvec",
  "tokio",
-]
-
-[[package]]
-name = "hyper-api-exp"
-version = "0.1.0"
-dependencies = [
- "bytes",
- "form_urlencoded",
- "futures-util",
- "http",
- "http-body-util",
- "hyper",
- "hyper-util",
- "percent-encoding",
- "pretty_env_logger",
- "serde",
- "serde_json",
- "tokio",
- "tokio-util",
- "walkdir",
 ]
 
 [[package]]
