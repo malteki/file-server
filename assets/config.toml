@@ -1,2 +1,2 @@
 port = 1337
-fs_dir = "~/gimp"
+fs_dir = "./fs"

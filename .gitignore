@@ -1,3 +1,4 @@
-/target
-/fs/*
-/assets/file-list.html
+target/
+fs/*
+assets/file-list.html
+assets/config.toml
