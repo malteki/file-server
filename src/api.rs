@@ -1,7 +1,10 @@
 use std::path::PathBuf;
+use std::sync::Arc;
 
+use app_fs::config::Config;
 use bytes::Bytes;
-use fs_tools::get_file_list;
+use app_fs::filesystem::get_file_list;
+use app_fs::FILE_LIST_HTML_PATH;
 use futures_util::TryStreamExt;
 use http_body_util::{ combinators::BoxBody, BodyExt, Full, StreamBody };
 use hyper::body::Frame;
@@ -10,13 +13,13 @@ use percent_encoding::percent_decode_str;
 use tokio::fs::File;
 use tokio_util::io::ReaderStream;
 
-#[allow(unused_imports)]
-use crate::*;
+use crate::app_fs;
 
 pub const PAGE_NOT_FOUND: &'static str = include_str!("../assets/page-not-found.txt");
 
 pub async fn handle_request(
-    req: Request<hyper::body::Incoming>
+    req: Request<hyper::body::Incoming>,
+    config: Arc<Config>
 ) -> Result<Response<BoxBody<Bytes, std::io::Error>>> {
     let query = req
         .uri()
@@ -34,7 +37,7 @@ pub async fn handle_request(
                     query = query.strip_prefix('/').unwrap_or("").to_string();
                 }
 
-                let path = PathBuf::from(FS_DIR).join(query);
+                let path = PathBuf::from(&config.fs_dir).join(query);
 
                 log::debug!("requested path: {}", path.display());
 
@@ -42,9 +45,9 @@ pub async fn handle_request(
             }
         }
         (&Method::GET, "/file-list.html", None) =>
-            simple_file_send(&PathBuf::from(FILE_LIST_PATH)).await,
+            simple_file_send(&PathBuf::from(FILE_LIST_HTML_PATH)).await,
         (&Method::GET, "/file-list", query) => {
-            let mut files = get_file_list().await;
+            let mut files = get_file_list(&config.fs_dir).await;
 
             // add support for filtering queries (eg. /file-list?contains=...)
             // we simplify here for now: we take the entire query as pattern for the String::contains(pat) filter

@@ -1,11 +1,11 @@
 use std::{ fs, path::PathBuf };
 
+use crate::app_fs::{ FILE_LIST_HTML_BASE, FILE_LIST_HTML_PATH };
 use walkdir::WalkDir;
 
-use crate::*;
-
-pub async fn get_file_list() -> Vec<String> {
-    let mut files: Vec<String> = WalkDir::new(FS_DIR)
+pub async fn get_file_list(fs_dir: &str) -> Vec<String> {
+    // create a list of available files
+    let mut files: Vec<String> = WalkDir::new(fs_dir)
         .follow_links(false)
         .follow_root_links(false)
         .into_iter()
@@ -13,7 +13,7 @@ pub async fn get_file_list() -> Vec<String> {
         .filter(|entry| { entry.metadata().map_or(false, |metadata| { metadata.is_file() }) })
         .map(|entry| { entry.into_path() })
         .filter_map(|path| {
-            path.strip_prefix(FS_DIR)
+            path.strip_prefix(fs_dir)
                 .map(|path| { PathBuf::from(path) })
                 .ok()
         })
@@ -31,8 +31,8 @@ pub async fn get_file_list() -> Vec<String> {
     files
 }
 
-pub async fn generate_file_list_html() -> Result<(), std::io::Error> {
-    let files = get_file_list().await;
+pub async fn generate_file_list_html(fs_dir: &str) -> Result<(), std::io::Error> {
+    let files = get_file_list(fs_dir).await;
 
     log::trace!("detected:");
     let mut href_lines = String::new();
@@ -41,7 +41,7 @@ pub async fn generate_file_list_html() -> Result<(), std::io::Error> {
         href_lines += &format!("{}<br>", href_line(&file));
     }
 
-    fs::write(FILE_LIST_PATH, FILE_LIST_BASE.replace("<!--HREF-LINES-->", &href_lines))
+    fs::write(FILE_LIST_HTML_PATH, FILE_LIST_HTML_BASE.replace("<!--HREF-LINES-->", &href_lines))
 }
 
 fn href_line(file_name: &str) -> String {
