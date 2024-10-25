@@ -1,7 +1,8 @@
 use std::{ fs, path::PathBuf };
 
-use crate::app_fs::{ FILE_LIST_HTML_BASE, FILE_LIST_HTML_PATH };
 use walkdir::WalkDir;
+
+use crate::{ FILE_LIST_HTML_BASE, FILE_LIST_HTML_PATH };
 
 pub async fn get_file_list(fs_dir: &str) -> Vec<String> {
     // create a list of available files

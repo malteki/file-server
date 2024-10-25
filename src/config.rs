@@ -1,5 +1,7 @@
 use std::{ fs, io::{ self, Write } };
 
+use crate::ASSETS_DIR;
+
 use super::CONFIG_PATH;
 
 #[derive(Debug, Clone, Hash, PartialEq)]
@@ -36,4 +38,18 @@ pub fn write_config_if_not_exist(config: &Config) -> Result<(), Box<dyn std::err
             if err.kind() == io::ErrorKind::AlreadyExists { Ok(()) } else { Err(Box::new(err)) }
         }
     }
+}
+
+/// this function will:
+///  1. create the assets folder if not existent
+///  2. create assets/config.toml if not existent
+///  3. load assets/config.toml
+pub fn init_config() -> Result<Config, Box<dyn std::error::Error>> {
+    let _ = fs::create_dir_all(ASSETS_DIR);
+
+    write_config_if_not_exist(&(Config { port: 1337, fs_dir: "./fs".to_string() }))?;
+
+    let config = load_config()?;
+
+    Ok(config)
 }

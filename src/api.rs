@@ -1,10 +1,7 @@
 use std::path::PathBuf;
 use std::sync::Arc;
 
-use app_fs::config::Config;
 use bytes::Bytes;
-use app_fs::filesystem::get_file_list;
-use app_fs::FILE_LIST_HTML_PATH;
 use futures_util::TryStreamExt;
 use http_body_util::{ combinators::BoxBody, BodyExt, Full, StreamBody };
 use hyper::body::Frame;
@@ -13,7 +10,9 @@ use percent_encoding::percent_decode_str;
 use tokio::fs::File;
 use tokio_util::io::ReaderStream;
 
-use crate::app_fs;
+use crate::config::Config;
+use crate::filesystem::get_file_list;
+use crate::FILE_LIST_HTML_PATH;
 
 pub const PAGE_NOT_FOUND: &'static str = include_str!("../assets/page-not-found.txt");
 

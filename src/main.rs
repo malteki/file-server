@@ -3,7 +3,7 @@ use std::net::{ Ipv4Addr, SocketAddr, SocketAddrV4 };
 use std::sync::Arc;
 use std::time::Instant;
 
-use app_fs::{ filesystem, init_fs };
+use config::init_config;
 use hyper::server::conn::http1;
 use hyper::service::service_fn;
 use hyper_util::rt::TokioIo;
@@ -13,10 +13,10 @@ use fileserver::*;
 
 #[tokio::main]
 async fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
-    env::set_var("RUST_LOG", "debug");
+    env::set_var("RUST_LOG", "trace");
     env_logger::init();
 
-    let config_arc = Arc::new(init_fs()?);
+    let config_arc = Arc::new(init_config()?);
     log::info!("config loaded: {config_arc:?}");
 
     let start = Instant::now();
