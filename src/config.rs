@@ -15,8 +15,8 @@ pub struct Config {
 
     /// the response text for GET "/"
     /// (status will alway be "OK")
-    #[serde(default = "config_defaults::get_root_text")]
-    pub get_root_text: String,
+    #[serde(default = "config_defaults::root_response")]
+    pub root_response: String,
 
     #[serde(default = "config_defaults::fs_dir")]
     pub fs_dir: String,
@@ -31,7 +31,7 @@ mod config_defaults {
         8008
     }
 
-    pub(super) fn get_root_text() -> String {
+    pub(super) fn root_response() -> String {
         "ONLINE".to_string()
     }
 
@@ -45,7 +45,7 @@ impl Default for Config {
         Self {
             ipv4_addr: config_defaults::ipv4_addr(),
             port: config_defaults::port(),
-            get_root_text: config_defaults::get_root_text(),
+            root_response: config_defaults::root_response(),
             fs_dir: config_defaults::fs_dir(),
         }
     }
