@@ -1,6 +1,6 @@
 use std::{ fs, io::{ self, Write } };
 
-use crate::ASSETS_DIR;
+use crate::APPDATA_DIR;
 
 use super::CONFIG_PATH;
 
@@ -36,7 +36,7 @@ mod config_defaults {
     }
 
     pub(super) fn fs_dir() -> String {
-        "./fs".to_string()
+        "./appdata/fs".to_string()
     }
 }
 
@@ -79,7 +79,7 @@ pub fn write_config_if_not_exist(config: &Config) -> Result<(), Box<dyn std::err
 ///  2. create assets/config.toml if not existent
 ///  3. load assets/config.toml
 pub fn init_config() -> Result<Config, Box<dyn std::error::Error>> {
-    let _ = fs::create_dir_all(ASSETS_DIR);
+    let _ = fs::create_dir_all(APPDATA_DIR);
 
     write_config_if_not_exist(&Config::default())?;
 

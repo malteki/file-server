@@ -1,4 +1,4 @@
 target/
-fs/*
-assets/file-list.html
-assets/config.toml
+appdata/fs/*
+appdata/file-list.html
+appdata/config.toml

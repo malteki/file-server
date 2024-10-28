@@ -14,7 +14,7 @@ use crate::config::Config;
 use crate::filesystem::get_file_list;
 use crate::FILE_LIST_HTML_PATH;
 
-pub const PAGE_NOT_FOUND: &'static str = include_str!("../assets/page-not-found.txt");
+pub const PAGE_NOT_FOUND: &'static str = include_str!("../appdata/page-not-found.txt");
 
 pub async fn handle_request(
     req: Request<hyper::body::Incoming>,
