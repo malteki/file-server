@@ -26,7 +26,7 @@ pub async fn handle_request(
         .map(|str| { percent_decode_str(str).decode_utf8_lossy().to_string() });
 
     match (req.method(), req.uri().path(), query) {
-        (&Method::GET, "/", _) => Ok(simple_response(StatusCode::OK, "FILE-SERVER ONLINE")),
+        (&Method::GET, "/", _) => Ok(simple_response(StatusCode::OK, config.get_root_text.clone())),
         (&Method::GET, "/file", Some(mut query)) => {
             if query.contains("../") {
                 Ok(simple_response(StatusCode::OK, "path can't contain ../"))
