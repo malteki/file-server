@@ -7,13 +7,47 @@ use super::CONFIG_PATH;
 #[derive(Debug, Clone, Hash, PartialEq)]
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct Config {
+    #[serde(default = "config_defaults::ipv4_addr")]
+    pub ipv4_addr: String,
+
+    #[serde(default = "config_defaults::port")]
     pub port: u16,
+
+    #[serde(default = "config_defaults::fs_dir")]
     pub fs_dir: String,
+
+    /// the response text for GET "/"
+    /// (status will alway be "OK")
+    #[serde(default = "config_defaults::get_root_text")]
+    pub get_root_text: String,
+}
+
+mod config_defaults {
+    pub(super) fn ipv4_addr() -> String {
+        "0.0.0.0".to_string()
+    }
+
+    pub(super) fn port() -> u16 {
+        8008
+    }
+
+    pub(super) fn fs_dir() -> String {
+        "./fs".to_string()
+    }
+
+    pub(super) fn get_root_text() -> String {
+        "ONLINE".to_string()
+    }
 }
 
 impl Default for Config {
     fn default() -> Self {
-        Self { port: 1337, fs_dir: "./fs".to_string() }
+        Self {
+            ipv4_addr: config_defaults::ipv4_addr(),
+            port: config_defaults::port(),
+            fs_dir: config_defaults::fs_dir(),
+            get_root_text: config_defaults::get_root_text(),
+        }
     }
 }
 
@@ -47,9 +81,11 @@ pub fn write_config_if_not_exist(config: &Config) -> Result<(), Box<dyn std::err
 pub fn init_config() -> Result<Config, Box<dyn std::error::Error>> {
     let _ = fs::create_dir_all(ASSETS_DIR);
 
-    write_config_if_not_exist(&(Config { port: 1337, fs_dir: "./fs".to_string() }))?;
+    write_config_if_not_exist(&Config::default())?;
 
     let config = load_config()?;
+
+    write_config(&config)?;
 
     Ok(config)
 }

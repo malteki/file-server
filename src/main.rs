@@ -1,5 +1,6 @@
 use std::env;
 use std::net::{ Ipv4Addr, SocketAddr, SocketAddrV4 };
+use std::str::FromStr;
 use std::sync::Arc;
 use std::time::Instant;
 
@@ -24,7 +25,15 @@ async fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
     let file_list_dur = start.elapsed();
     log::debug!("generating file-list.html took {file_list_dur:?}");
 
-    let addr: SocketAddr = SocketAddrV4::new(Ipv4Addr::UNSPECIFIED, config_arc.port).into();
+    let ip = match Ipv4Addr::from_str(&config_arc.ipv4_addr) {
+        Ok(ip) => ip,
+        Err(err) => {
+            log::warn!("failed to parse ip ({err}), switching to 0.0.0.0");
+            Ipv4Addr::UNSPECIFIED
+        }
+    };
+
+    let addr: SocketAddr = SocketAddrV4::new(ip, config_arc.port).into();
 
     let listener = TcpListener::bind(addr).await?;
     log::info!("Listening on http://{}", addr);
