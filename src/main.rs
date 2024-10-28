@@ -38,24 +38,33 @@ async fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
     let listener = TcpListener::bind(addr).await?;
     log::info!("Listening on http://{}", addr);
 
+    let mut conn_counter = 0u64;
     loop {
         let (stream, _) = listener.accept().await?;
         let io = TokioIo::new(stream);
 
         let config = config_arc.clone();
 
+        let id = conn_counter;
+
         tokio::task::spawn(async move {
+            log::trace!("[{id}] new client connected");
+
             if
                 let Err(err) = http1::Builder::new().serve_connection(
                     io,
                     service_fn(|req| {
                         let config = config.clone();
-                        async move { api::handle_request(req, config).await }
+                        async move { api::handle_request(req, id, config).await }
                     })
                 ).await
             {
-                log::warn!("Failed to serve connection: {:?}", err);
+                log::warn!("[{id}] Failed to serve connection: {:?}", err);
             }
+
+            log::trace!("[{id}] connection closed");
         });
+
+        conn_counter += 1;
     }
 }

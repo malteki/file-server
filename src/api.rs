@@ -18,6 +18,7 @@ pub const PAGE_NOT_FOUND: &'static str = include_str!("../appdata/page-not-found
 
 pub async fn handle_request(
     req: Request<hyper::body::Incoming>,
+    id: u64,
     config: Arc<Config>
 ) -> Result<Response<BoxBody<Bytes, std::io::Error>>> {
     let query = req
@@ -38,7 +39,7 @@ pub async fn handle_request(
 
                 let path = PathBuf::from(&config.fs_dir).join(query);
 
-                log::debug!("requested path: {}", path.display());
+                log::debug!("[{id}] requested path: {}", path.display());
 
                 simple_file_send(&path).await
             }
