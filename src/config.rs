@@ -13,13 +13,13 @@ pub struct Config {
     #[serde(default = "config_defaults::port")]
     pub port: u16,
 
-    #[serde(default = "config_defaults::fs_dir")]
-    pub fs_dir: String,
-
     /// the response text for GET "/"
     /// (status will alway be "OK")
     #[serde(default = "config_defaults::get_root_text")]
     pub get_root_text: String,
+
+    #[serde(default = "config_defaults::fs_dir")]
+    pub fs_dir: String,
 }
 
 mod config_defaults {
@@ -31,12 +31,12 @@ mod config_defaults {
         8008
     }
 
-    pub(super) fn fs_dir() -> String {
-        "./fs".to_string()
-    }
-
     pub(super) fn get_root_text() -> String {
         "ONLINE".to_string()
+    }
+
+    pub(super) fn fs_dir() -> String {
+        "./fs".to_string()
     }
 }
 
@@ -45,8 +45,8 @@ impl Default for Config {
         Self {
             ipv4_addr: config_defaults::ipv4_addr(),
             port: config_defaults::port(),
-            fs_dir: config_defaults::fs_dir(),
             get_root_text: config_defaults::get_root_text(),
+            fs_dir: config_defaults::fs_dir(),
         }
     }
 }
