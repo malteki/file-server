@@ -7,7 +7,6 @@ pub mod config;
 
 // ---
 
-pub const FS_DIR: &'static str = "./fs";
 pub const ASSETS_DIR: &'static str = "./assets";
 
 pub const FILE_LIST_HTML_PATH: &'static str = "./assets/file-list.html";
