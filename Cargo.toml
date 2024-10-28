@@ -2,6 +2,8 @@
 name = "fileserver"
 version = "0.1.0"
 edition = "2021"
+authors = ["malteki <mki.dev@web.de>"]
+repository = "https://github.com/malteki/http-file-server.git"
 readme = "README.md"
 
 [dependencies]
