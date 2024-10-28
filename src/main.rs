@@ -1,6 +1,7 @@
 use std::env;
 use std::net::{ Ipv4Addr, SocketAddr, SocketAddrV4 };
 use std::str::FromStr;
+use std::sync::atomic::AtomicU64;
 use std::sync::Arc;
 use std::time::Instant;
 
@@ -39,16 +40,21 @@ async fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
     log::info!("Listening on http://{}", addr);
 
     let mut conn_counter = 0u64;
+
+    let active_connections = Arc::new(AtomicU64::new(0));
+
     loop {
         let (stream, _) = listener.accept().await?;
         let io = TokioIo::new(stream);
 
         let config = config_arc.clone();
 
+        let active_connections = active_connections.clone();
         let id = conn_counter;
 
         tokio::task::spawn(async move {
-            log::trace!("[{id}] new client connected");
+            active_connections.fetch_add(1, std::sync::atomic::Ordering::AcqRel);
+            log::trace!("> [{id}]");
 
             if
                 let Err(err) = http1::Builder::new().serve_connection(
@@ -62,7 +68,8 @@ async fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
                 log::warn!("[{id}] Failed to serve connection: {:?}", err);
             }
 
-            log::trace!("[{id}] connection closed");
+            active_connections.fetch_sub(1, std::sync::atomic::Ordering::AcqRel);
+            log::trace!("< [{id}]");
         });
 
         conn_counter += 1;
